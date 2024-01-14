@@ -1,0 +1,18 @@
+#include <stdio.h>
+
+void go( int **p, int *z ) ;
+
+int main() {
+    int *a, b = 10, c = 20 ;
+    go( &a, &b ) ;
+    printf( "in main b : %d %p %p\n", *a, a, &a ) ;
+    printf("-----------------------\n");
+    go( &a, &c ) ;
+    printf( "in main c : %d %p %p", *a, a, &a ) ;
+    return 0 ;
+}//end function
+
+void go( int **p, int *z ) {
+    *p = z;
+    printf("in void : %d %p %p\n", **p, *p, p);
+}
