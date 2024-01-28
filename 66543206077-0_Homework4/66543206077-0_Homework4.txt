@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <string.h>
+
+struct node {
+    char data[20];
+    struct node* next;
+    struct node* back;
+};
+
+struct node* AddNode(struct node** walk, const char* data);
+void ShowAll(struct node** walk);
+void Swap(struct node** walk, int x, int y);
+
+int main() {
+    struct node* start, * now;
+    start = NULL;
+    int x;
+    int y;
+    int count;
+    char text[20];
+
+    printf("How much to add Node : ");
+    scanf("%d", &count);
+
+    for (int i = 0; i < count; i++) {
+        printf("Data Node [%d]: ", i + 1);
+        scanf(" %s", text);
+        now = AddNode(&start, text);
+    }
+    
+    printf("[All Note]\n");
+    ShowAll(&start);
+    
+    printf("\n");    
+    if(count > 1) {
+        printf("Swap Node 1 : ");
+        scanf("%d", &x);
+        printf("Swap Node 2 : ");
+        scanf("%d", &y);
+        Swap(&start, x, y);
+    }
+    
+    if(count <= 1) {
+        printf("[Sorry can't Swap not enough note]\n");
+    } 
+
+    printf("\n[Result]\n");
+    ShowAll(&start);
+
+    return 0;
+}
+
+struct node* AddNode(struct node** walk, const char* data) {
+    struct node* temp = NULL;
+    while (*walk != NULL) {
+        temp = *walk;
+        walk = &(*walk)->next;
+    }
+
+    *walk = new struct node;
+    strcpy((*walk)->data, data);
+    (*walk)->next = NULL;
+    (*walk)->back = temp;
+    return *walk;
+}
+
+void ShowAll(struct node** walk) {
+    while (*walk != NULL) {
+        printf("%s ", (*walk)->data);
+        walk = &(*walk)->next;
+    }
+    printf("\n");
+}
+
+void Swap(struct node** walk, int x, int y) {
+    struct node* temp = *walk;
+    int n = 0;
+    while (temp != NULL) {
+        n++;
+        temp = temp->next;
+    }
+    
+    if (x < 1 || x > n || y < 1 || y > n) {
+        return;
+    }
+
+    struct node* node1 = *walk;
+    struct node* node2 = *walk;
+
+    for (int i = 1; i < x; i++) {
+        node1 = node1->next;
+    }
+
+    for (int i = 1; i < y; i++) {
+        node2 = node2->next;
+    }
+
+    char val[20];
+    strcpy(val, node1->data);
+    strcpy(node1->data, node2->data);
+    strcpy(node2->data, val);
+}
