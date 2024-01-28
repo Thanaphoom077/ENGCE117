@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+void GetSet( int [], int * ) ;
+
+int main() {
+    int *data, num ;
+    GetSet( &data, &num ) ;
+    return 0 ;
+}//end function
+
+void GetSet( int data[], int *num ){
+    
+    printf("Enter amount of data:");
+    scanf("%i", num);
+    
+    for(int i = 0; i < *num;i++ ){
+        printf("Enter Number Data[%i] :", i + 1);
+        scanf("%i", &data[i]);
+    }
+    
+    for(int j = 0; j < *num;j++){
+        printf("Data[%i] :%i\n", j + 1, data[j]);
+    }
+    
+    printf("End");
+}

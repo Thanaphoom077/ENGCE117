@@ -1,0 +1,28 @@
+#include <stdio.h>
+int *GetSet(int *);
+
+int main() {
+    int *data, num;
+    data = GetSet(&num);
+
+    for(int i = 0; i < num; i++){
+        printf("Data[%i]: %i\n", i+1, data[i]);
+    }
+    free(data);
+
+    return 0;
+}
+
+int *GetSet(int *num) {
+    printf("Enter amount of data: ");
+    scanf("%i", num);
+
+    int *data = (int *)malloc(*num * sizeof(int));
+
+    for (int i = 0; i < *num; i++) {
+        printf("Enter Data %d: ", i + 1);
+        scanf("%i", &data[i]);
+    }
+
+    return data;
+}

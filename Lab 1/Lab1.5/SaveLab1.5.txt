@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+void GetMatrix(int **&value, int *row, int *col);
+
+int main() {
+    int **data, m, n;
+    GetMatrix(data, &m, &n);
+
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("Data[%i][%i]: %i\n", i + 1, j + 1, data[i][j]);
+        }
+    }
+    
+    for (int i = 0; i < m; i++) {
+        delete[] data[i];
+    }
+    delete[] data;
+
+    return 0;
+}
+
+void GetMatrix(int **&value, int *row, int *col) {
+    printf("Enter row:");
+    scanf("%i", row);
+
+    printf("Enter col:");
+    scanf("%i", col);
+
+    value = new int*[*row];
+
+    for (int i = 0; i < *row; i++) {
+        value[i] = new int[*col];
+    }
+
+    for (int i = 0; i < *row; i++) {
+        for (int j = 0; j < *col; j++) {
+            printf("Enter Data[%i][%i]: ", i + 1, j + 1);
+            scanf("%i", &value[i][j]);
+        }
+    }
+}
