@@ -112,8 +112,6 @@ void Swap(struct node **walk, char *x, char *y) {
     
     char intextx[20];
     char intexty[20];
-    
-    printf("[%s]", x);
 
     struct node *node1 = *walk; //สร้างตัวแปร node1 ให้ค่าเป็นจุดเริ่ม
     struct node *node2 = *walk; //สร้างตัวแปร node2 ให้ค่าเป็นจุดเริ่ม
@@ -121,19 +119,18 @@ void Swap(struct node **walk, char *x, char *y) {
     do{
         node1 = node1->next;
         strcpy(intextx, x);
-        //printf("%s", intextx);
+        //printf("[%s]", intextx);
     }while(intextx == x);
 
     do{
         node2 = node2->next;
         strcpy(intexty, y);
-        //printf("%s", intexty);
+        //printf("[%s]", intexty);
     }while(intexty == y);
     
-    char val[20];
-    strcpy(val, node1->data); //ให้ val เก็บค่าแรกไว้ถ้าไม่มี node1 จะโดยทับไปแล้วแทนค่า node2 ไม่ได้
-    strcpy(node1->data, node2->data); //ให้ node1 หรือ x เท่ากับ y
-    strcpy(node2->data, val); //ให้ node2 หรือ y เท่ากับ x
+    node2->next = node1->next->data
+    node2->back = node1->next->data
+    node2->data = node1->next->data
 }
 
 void InsNode(struct node *walk, char *data, struct node **begin) {
