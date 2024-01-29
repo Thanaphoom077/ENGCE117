@@ -1,0 +1,156 @@
+#include <stdio.h>
+#include <string.h>
+
+struct node {
+    char data[20];
+    struct node* next;
+    struct node* back;
+};
+
+struct node *AddNode(struct node **walk, const char *data);
+void ShowAll(struct node **walk);
+void ShowBack(struct node **walk);
+void Swap(struct node **walk, char *x, char *y);
+void InsNode(struct node *walk, char *data, struct node **begin);
+
+int main() {
+    struct node* start, * now;
+    start = NULL;
+    char datax[20];
+    char datay[20];
+    int count;
+    char text[20];
+    char inscheck[0];
+    char insdata[20];
+    char Swapcheck[0];
+
+    printf("How much to add Node : ");
+    scanf("%d", &count);
+
+    for (int i = 0; i < count; i++) {
+        printf("Data Node [%d]: ", i + 1);
+        scanf(" %s", text);
+        now = AddNode(&start, text);
+    }
+    
+    printf("[All Note]\n");
+    ShowAll(&start);
+    
+    printf("Do you want to add node more [y/n] : ");
+    scanf(" %s", inscheck);
+    if(inscheck[0] == 'y'){
+        printf("Data New Node : ");
+        scanf(" %s", insdata);
+        InsNode(now, insdata, &start);
+        count++;
+    }
+    
+    printf("[All Note]\n");
+    ShowAll(&start);
+    
+    printf("Do you want to Swap node more [y/n] : ");
+    scanf(" %s", Swapcheck);
+    if(Swapcheck[0] == 'y'){
+        if(count > 1) {
+            printf("Swap Node 1 : ");
+            scanf("%s", datax);
+            printf("Swap Node 2 : ");
+            scanf("%s", datay);
+            Swap(&start, datax, datay);
+        }
+    
+        if(count <= 1) {
+            printf("[Sorry can't Swap not enough note]\n");
+        } 
+    }
+    printf("\n");    
+
+    printf("\n[Result next]\n");
+    ShowAll(&start);
+    printf("\n[Result back]\n");
+    ShowBack(&now);
+    return 0;
+}
+
+struct node *AddNode(struct node **walk, const char *data) {
+    struct node* temp = NULL; //สร้าง temp เพื่อเก็บ node ก่อนหน้า
+    while (*walk != NULL) {
+        temp = *walk; // ให้เก็บ node ก่อนที่จะเดิน
+        walk = &(*walk)->next; //ให้ node เดินหน้า
+    }
+
+    *walk = new struct node; //สร้าง node ใหม่ขึ้นมา โดย walk คือ node ใหม่แล้ว
+    strcpy((*walk)->data, data); //ด้วยตวามที่เป็น string จึงต้อง strcpy โดยช่องนี้คือ ให้ค่ากับ *walk โดยให้ *walk data ที่รับเข้ามา จากตัวแปร text
+    (*walk)->next = NULL;//ให้ตำแหน่งถัดจาก walk มีค่าเป็น NULL แทน node สุดท้าย
+    (*walk)->back = temp;//ให้ back มีค่าเท่ากับ temp ที่เก็บไว้ขณะเดิน
+    return *walk; //ส่งค่า walk ออก
+}
+
+void ShowAll(struct node **walk) {
+    while (*walk != NULL) {
+        printf("%s ", (*walk)->data);
+        walk = &(*walk)->next;
+    }
+    printf("\n");
+}
+
+void ShowBack(struct node **walk) {
+    struct node *temp = *walk; //สร้าง temp เก็บที่อยู่ของ now
+
+    while (temp->next != NULL) {
+        temp = temp->next; // หา Node สุดท้าย
+    }
+    while (temp != NULL) {
+        printf("%s ", temp->data);
+        temp = temp->back;
+    }
+    printf("\n");
+}
+
+void Swap(struct node **walk, char *x, char *y) {
+    struct node *temp = *walk; //เก็ยที่อยู่จุดเริ่ม
+    
+    char intextx[20];
+    char intexty[20];
+    
+    printf("[%s]", x);
+
+    struct node *node1 = *walk; //สร้างตัวแปร node1 ให้ค่าเป็นจุดเริ่ม
+    struct node *node2 = *walk; //สร้างตัวแปร node2 ให้ค่าเป็นจุดเริ่ม
+    
+    do{
+        node1 = node1->next;
+        strcpy(intextx, x);
+        //printf("%s", intextx);
+    }while(intextx == x);
+
+    do{
+        node2 = node2->next;
+        strcpy(intexty, y);
+        //printf("%s", intexty);
+    }while(intexty == y);
+    
+    char val[20];
+    strcpy(val, node1->data); //ให้ val เก็บค่าแรกไว้ถ้าไม่มี node1 จะโดยทับไปแล้วแทนค่า node2 ไม่ได้
+    strcpy(node1->data, node2->data); //ให้ node1 หรือ x เท่ากับ y
+    strcpy(node2->data, val); //ให้ node2 หรือ y เท่ากับ x
+}
+
+void InsNode(struct node *walk, char *data, struct node **begin) {
+    if (walk != NULL) {
+        while (walk->next != NULL) {
+            walk = walk->next; // หา Node สุดท้าย
+        }
+
+        walk->next = new struct node; //สร้าง node ใหม่
+        strcpy(walk->next->data, data); //ให้ค่า data กับ node ใหม่
+        walk->next->next = NULL; //ให้ next ของ node ใหม่ชี้ที่  node ต่อไป
+        walk->next->back = walk; //ให้ back ของ node ใหม่ชี้ที่ node ก่อนหน้า
+    } else {
+        // กรณี linked list ว่าง
+        *begin = new struct node; //สร้าง node ใหม่
+        strcpy((*begin)->data, data); //ให้ค่า data กับ node ใหม่
+        (*begin)->next = NULL; //ให้ next ของ node ใหม่ชี้ที่  node ต่อไป
+        (*begin)->back = NULL; //ให้ back ของ node ใหม่ชี้ที่ node ก่อนหน้า
+    }
+}
