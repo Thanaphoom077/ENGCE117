@@ -1,0 +1,184 @@
+#include <stdio.h>
+#include <string.h>
+
+struct node {
+    int data;
+    struct node* next;
+    struct node* back;
+};
+
+struct node *AddNode(struct node **walk, int data);
+void ShowAll(struct node **walk);
+void ShowBack(struct node **walk);
+void Swap(struct node **walk, int x, int y);
+void InsNode(struct node *walk, int data, struct node **begin);
+
+int main() {
+    struct node* start, * now;
+    start = NULL;
+    int datax;
+    int datay;
+    int count;
+    int text;
+    char inscheck;
+    int insdata;
+    char Swapcheck;
+
+    printf("How much to add Node : ");
+    scanf("%d", &count);
+
+    for (int i = 0; i < count; i++) {
+        printf("Data Node [%d]: ", i + 1);
+        scanf(" %d", &text);
+        now = AddNode(&start, text);
+    }
+    
+    printf("[All Note]\n");
+    ShowAll(&start);
+    
+    printf("Do you want to add node more [y/n] : ");
+    scanf(" %c", &inscheck);
+    if(inscheck == 'y'){
+        printf("Data New Node : ");
+        scanf(" %d", &insdata);
+        InsNode(now, insdata, &start);
+        count++;
+    }
+    
+    printf("[All Note]\n");
+    ShowAll(&start);
+    
+    printf("Do you want to Swap node more [y/n] : ");
+    scanf(" %c", &Swapcheck);
+    if(Swapcheck == 'y'){
+        if(count > 1) {
+            printf("Swap Node 1 : ");
+            scanf("%d", &datax);
+            printf("Swap Node 2 : ");
+            scanf("%d", &datay);
+            Swap(&start, datax, datay);
+        }
+    
+        if(count <= 1) {
+            printf("[Sorry can't Swap not enough note]\n");
+        } 
+    }
+    printf("\n");    
+
+    printf("\n[Result next]\n");
+    ShowAll(&start);
+    printf("\n[Result back]\n");
+    ShowBack(&now);
+    return 0;
+}
+
+struct node *AddNode(struct node **walk, int data) {
+    struct node* temp = NULL; //สร้าง temp เพื่อเก็บ node ก่อนหน้า
+    while (*walk != NULL) {
+        temp = *walk; // ให้เก็บ node ก่อนที่จะเดิน
+        walk = &(*walk)->next; //ให้ node เดินหน้า
+    }
+
+    *walk = new struct node; //สร้าง node ใหม่ขึ้นมา โดย walk คือ node ใหม่แล้ว
+    (*walk)->data = data;
+    (*walk)->next = NULL;//ให้ตำแหน่งถัดจาก walk มีค่าเป็น NULL แทน node สุดท้าย
+    (*walk)->back = temp;//ให้ back มีค่าเท่ากับ temp ที่เก็บไว้ขณะเดิน
+    return *walk; //ส่งค่า walk ออก
+}
+
+void ShowAll(struct node **walk) {
+    while (*walk != NULL) {
+        printf("%d ", (*walk)->data);
+        walk = &(*walk)->next;
+    }
+    printf("\n");
+}
+
+void ShowBack(struct node **walk) {
+    struct node *temp = *walk; //สร้าง temp เก็บที่อยู่ของ now
+
+    while (temp->next != NULL) {
+        temp = temp->next; // หา Node สุดท้าย
+    }
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->back;
+    }
+    printf("\n");
+}
+
+void Swap(struct node **walk, int x, int y) {
+    struct node *node1 = *walk;
+    struct node *node2 = *walk;
+    struct node *prev1 = NULL;
+    struct node *prev2 = NULL;
+
+    // ไปหาตำแหน่งที่ชี้ x
+    while (node1 != NULL && node1->data != x) {
+        prev1 = node1; //เก็บตำแหน่งที่ชี้ x อยู่
+        node1 = node1->next; //เก็บตำแหน่ง x
+    }
+
+    // ไปหาตำแหน่งที่ชี้ y
+    while (node2 != NULL && node2->data != y) {
+        prev2 = node2;//เก็บตำแหน่งที่ชี้ y อยู่
+        node2 = node2->next;//เก็บตำแหน่ง y
+    }
+
+    if (node1 != NULL && node2 != NULL) { //ถ้า next ของ node1 และ node2 ไม่ใช้ null ให้ทำด้านใน
+        if (prev1 != NULL) {//ถ้า node1 ไม่ได้อยู่ที่ตำแหน่งเริ่มต้น
+            prev1->next = node2;//ให้โนดก่อนหน้าของ node1 ชี้ไปที่ node2
+        } else {
+            *walk = node2;//ถ้า node1 เป็นตำแหน่งเริ่มต้นให้ทำการเปลี่ยน node2 เป็นจุดเริ่มต้นแทน
+        }
+
+        if (prev2 != NULL) {//ถ้า node2 ไม่ได้อยู่ที่ตำแหน่งเริ่มต้น
+            prev2->next = node1;//ให้โนดก่อนหน้าของ node2 ชี้ไปที่ node1
+        } else {
+            *walk = node1;//ถ้า node2 เป็นตำแหน่งเริ่มต้นให้ทำการเปลี่ยน node1 เป็นจุดเริ่มต้นแทน
+        }
+
+        struct node *tempNext = node1->next;//เก็บค่าถัดไปของ node1
+        node1->next = node2->next;// ให้ตำแหน่งถัดไปของ node1 เป็นเหมือนกับ node2
+        node2->next = tempNext;// ให้ตำแหน่งถัดไปของ node2 เป็นเหมือนกับ node1
+        
+        struct node *tempBack = node1->back;//เก็บค่าก่อนหน้าของ node1
+        node1->back = node2->back;// ให้ตำแหน่งก่อนหน้าของ node1 เป็นเหมือนกับ node2
+        node2->back = tempBack;// ให้ตำแหน่งก่อนหน้าของ node2 เป็นเหมือนกับ node1
+
+        if (node1->next != NULL) {//ถ้า node1 มีโนดถัดไป
+            node1->next->back = node1;//ให้โนดถัดไปของ node1 ชี้กลับมาที่ node1
+        }
+        
+        if (node2->next != NULL) {//ถ้า node2 มีโนดถัดไป
+            node2->next->back = node2;//ให้โนดถัดไปของ node2 ชี้กลับมาที่ node1
+        }
+        
+        if (node1->back != NULL) {//ถ้า node1 มีโนดก่อนหน้า
+            node1->back->next = node1;//ให้โนดก่อนหน้าของ node1 ชี้ไปที่ node1
+        }
+        
+        if (node2->back != NULL) {//ถ้า node2 มีโนดก่อนหน้า
+            node2->back->next = node2;//ให้โนดก่อนหน้าของ node2 ชี้ไปที่ node2
+        }
+    }
+}
+
+void InsNode(struct node *walk, int data, struct node **begin) {
+    if (walk != NULL) {
+        while (walk->next != NULL) {
+            walk = walk->next; // หา Node สุดท้าย
+        }
+
+        walk->next = new struct node; //สร้าง node ใหม่
+        walk->next->data = data; //ให้ค่า data กับ node ใหม่
+        walk->next->next = NULL; //ให้ next ของ node ใหม่ชี้ที่  node ต่อไป
+        walk->next->back = walk; //ให้ back ของ node ใหม่ชี้ที่ node ก่อนหน้า
+    } else {
+        // กรณี linked list ว่าง
+        *begin = new struct node; //สร้าง node ใหม่
+        (*begin)->data = data; //ให้ค่า data กับ node ใหม่
+        (*begin)->next = NULL; //ให้ next ของ node ใหม่ชี้ที่  node ต่อไป
+        (*begin)->back = NULL; //ให้ back ของ node ใหม่ชี้ที่ node ก่อนหน้า
+    }
+}
