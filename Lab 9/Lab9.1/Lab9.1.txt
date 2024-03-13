@@ -1,0 +1,157 @@
+#include <iostream>
+#include <fstream>
+#include <cstring>
+
+using namespace std;
+
+struct studentNode {
+    char name[20];
+    int age;
+    char sex;
+    float gpa;
+    struct studentNode *next;
+};
+
+class LinkedList {
+protected:
+    struct studentNode *start, **now;
+
+public:
+    LinkedList();
+    ~LinkedList();
+    void InsNode(char n[], int a, char s, float g);
+    void DelNode();
+    void GoNext();
+    void GoFirst();
+    void GoLast();
+    void ShowAll();
+    int FindNode(char n[]);
+    struct studentNode *NowNode();
+    void EditNode(char n[], int a, char s, float g);
+    void readfile();
+    void writefile();
+};
+
+void EditData(LinkedList *ll);
+void AddData(LinkedList *ll);
+void FindData(LinkedList *ll);
+
+int main() {
+    LinkedList listA;
+    int menu;
+    listA.readfile();
+    cout << "    Menu - (1) Add (2) Edit (3) Delete (4) Find (5) Show (0) Edit : ";
+    cin >> menu;
+    while (menu != 0) {
+        switch (menu) {
+        case 1:AddData(&listA);break;
+        case 2:EditData(&listA);break;
+        case 3:listA.DelNode();break;
+        case 4:FindData(&listA);break;
+        case 5:listA.ShowAll();break;
+        }//end switch
+        cout << "    Menu - (1) Add (2) Edit (3) Delete (4) Find (5) Show (0) Edit : ";
+        cin >> menu;
+    }//end while
+    listA.writefile();
+    return 0;
+}//end function
+
+void AddData(LinkedList *ll) {
+    char name[20];
+    int age;
+    char sex;
+    float gpa;
+    cout << "Enter name: ";
+    cin >> name;
+    cout << "Enter age: ";
+    cin >> age;
+    cout << "Enter sex: ";
+    cin >> sex;
+    cout << "Enter GPA: ";
+    cin >> gpa;
+    ll->InsNode(name, age, sex, gpa);
+}
+
+void EditData(LinkedList *ll) {
+    char name[20];
+    int age;
+    char sex;
+    float gpa;
+    cout << "Enter name to edit: ";
+    cin >> name;
+    cout << "Enter new name: ";
+    cin >> name;
+    cout << "Enter new age: ";
+    cin >> age;
+    cout << "Enter new sex: ";
+    cin >> sex;
+    cout << "Enter new GPA: ";
+    cin >> gpa;
+    ll->EditNode(name, age, sex, gpa);
+}
+
+void FindData(LinkedList *ll) {
+    char name[20];
+    cout << "Enter name to find: ";
+    cin >> name;
+    int index = ll->FindNode(name);
+    if (index != -1) {
+        cout << "Found at index " << index << endl;
+    } else {
+        cout << "Not found" << endl;
+    }
+}
+
+LinkedList::LinkedList() {
+    start = NULL;
+}
+
+LinkedList::~LinkedList() {
+}
+
+void LinkedList::readfile() {
+    ifstream file("data.txt");
+    if (file.is_open()) {
+        char name[20];
+        int age;
+        char sex;
+        float gpa;
+        while (file >> name >> age >> sex >> gpa) {
+            InsNode(name, age, sex, gpa);
+        }
+        file.close();
+    } else {
+        cout << "Unable to open file\n";
+    }
+}
+
+void LinkedList::writefile() {
+    ofstream file("data.txt");
+    if (file.is_open()) {
+        studentNode *current = start;
+        while (current != NULL) {
+            file << current->name << " " << current->age << " " << current->sex << " " << current->gpa << endl;
+            current = current->next;
+        }
+        file.close();
+    } else {
+        cout << "Unable to open file";
+    }
+}
+
+void LinkedList::DelNode() {
+}
+
+void LinkedList::ShowAll() {
+}
+
+void LinkedList::InsNode(char n[], int a, char s, float g) {
+}
+
+void LinkedList::EditNode(char n[], int a, char s, float g) {
+}
+
+int LinkedList::FindNode(char n[]) {
+}
+
